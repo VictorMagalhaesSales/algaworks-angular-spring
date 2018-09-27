@@ -16,7 +16,7 @@ export class LancamentoFiltro {
 @Injectable()
 export class LancamentoService {
 
-  lancamentosUrl = 'http://localhost:8080/lancamentos';
+  url = 'http://localhost:8080/lancamentos';
 
   constructor(private http: Http) { }
 
@@ -41,10 +41,19 @@ export class LancamentoService {
       params.set('dataVencimentoAte', moment(filtro.dataVencimentoFim).format('YYYY-MM-DD'));
     }
 
-    return this.http.get(`${this.lancamentosUrl}?resumo`,
+    return this.http.get(`${this.url}?resumo`,
         { headers, search: params })
       .toPromise()
       .then(response => response.json())
+  }
+
+  excluir(codigo: number): Promise<any>{
+    const headers = new  Headers();
+    headers.append('Authorization', 'Basic YWRtaW5AYWxnYW1vbmV5LmNvbTphZG1pbg==');
+
+    return this.http.delete(`${this.url}/${codigo}`, { headers })
+      .toPromise()
+      .then(() => null);
   }
 
 }

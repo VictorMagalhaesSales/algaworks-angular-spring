@@ -1,7 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { ErrorHandlerService } from './../../core/error-handler.service';
+import { ConfirmationService } from 'primeng/components/common/api';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { LancamentoService, LancamentoFiltro } from './../lancamento.service';
 import { LazyLoadEvent } from 'primeng/components/common/lazyloadevent';
+
+import { ToastyService } from 'ng2-toasty';
 
 @Component({
   selector: 'app-lancamentos-pesquisa',
@@ -13,28 +17,56 @@ export class LancamentosPesquisaComponent implements OnInit {
   totalRegistros = 0;
   filtro = new LancamentoFiltro();
   lancamentos = [];
+  @ViewChild('tabela') grid;
 
-  constructor(private lancamentoService: LancamentoService) { }
+  constructor(
+    private lancamentoService: LancamentoService,
+    private toasty: ToastyService,
+    private confirmation: ConfirmationService,
+    private errorHandler: ErrorHandlerService
+    ) { }
 
   ngOnInit() {
     //this.pesquisar();
   }
 
-  pesquisar(pagina: number) {
+  confirmarExclusao(lancamento: any) {
+    this.confirmation.confirm({
+      message: 'Tem certeza que deseja excluir?',
+      accept: () => {
+        this.excluir(lancamento);
+      }
+    });
+  }
+
+  pesquisar(pagina = 0) {
     this.filtro.pagina = pagina;
     this.lancamentoService.pesquisar(this.filtro)
       .then(lancamentos => {
         this.lancamentos = lancamentos.content;
         this.totalRegistros = lancamentos.totalElements;
         //this.filtro.pagina =
-      });
+      })
+      .catch(erro => this.errorHandler.handle(erro));
   }
 
   aoMudarPagina(event: LazyLoadEvent){
-    console.log(event);
     const pagina = event.first / event.rows ;
-    console.log(pagina);
     this.pesquisar(pagina);
+  }
+
+  excluir(lancamento: any){
+    this.lancamentoService.excluir(lancamento.codigo)
+    .then(() => {
+      if(this.grid.first === 0){
+        this.pesquisar();
+      }
+      else {
+        this.grid.first = 0;
+      }
+      this.toasty.success('Lançamento excluido com sucesso!');
+    })
+    .catch(erro => this.errorHandler.handle(erro));
   }
 
 }
@@ -43,7 +75,7 @@ export class LancamentosPesquisaComponent implements OnInit {
  * Primeiro temos que setar 2 parâmetros na requisição: page e size(fixo);
  * Depois, temos pegar a informação quantidade de itens na requsição da pesquisa e guardar;
  * No formulário, diremos o tanto de linhas [rows]="quantidade de itens na requisição", lazy="true" e [totalRecords]="quantidade de itens NO GERAL";
- * Botaremos, também no formulário, o (onLazyLoad)="aoMudarPagina($event)". Ele será executado ao mudar a página; 
+ * Botaremos, também no formulário, o (onLazyLoad)="aoMudarPagina($event)". Ele será executado ao mudar a página;
  * No método aoMudarPagina, dividiremos o primeiro elemento pelo número de linhas e pegaremos a página;
  * Chamaremos, no aoMudarPagina, o método pesquisar passando a página como parâmetro, que será colocado no objeto filtro e passado para o método get do serviço.
 */

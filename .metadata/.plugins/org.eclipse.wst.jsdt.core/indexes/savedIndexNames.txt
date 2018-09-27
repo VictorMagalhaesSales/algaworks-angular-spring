@@ -1,0 +1,6 @@
+INDEX VERSION 1.4+C:\Users\victor.sales\Desktop\SistemaAlgaWorks\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+1089971351.index
+1824527600.index
+1300901939.index
+612886609.index
+1030417217.index

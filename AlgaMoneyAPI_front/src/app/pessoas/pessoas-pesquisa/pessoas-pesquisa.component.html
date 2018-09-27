@@ -1,5 +1,7 @@
 <div class="container">
 
+  <form autocomplete="off" (ngSubmit)="pesquisar()">
+
   <div class="ui-g">
     <div class="ui-g-12">
       <h1>Pessoas</h1>
@@ -7,7 +9,7 @@
 
     <div class="ui-g-12 ui-fluid">
       <label>Nome</label>
-      <input pInputText type="text">
+      <input pInputText type="text" name="nome" [(ngModel)]="filtro.nome">
     </div>
 
     <div class="ui-g-12">
@@ -15,9 +17,31 @@
     </div>
   </div>
 
+  </form>
+
   <div class="ui-g">
     <div class="ui-g-12">
-      <app-pessoas-grid [pessoas]="pessoas"></app-pessoas-grid>
+      <p-dataTable [value]="pessoas" [rows]="filtro.itensPorPagina" [paginator]="true" [responsive]="true"
+      [lazy]="true" [totalRecords]="totalDeRegistros" (onLazyLoad)="aoMudarPagina($event)" emptyMessage="Nenhuma pessoa foi encontrada" #tabela>
+        <p-column field="nome" header="Nome"></p-column>
+        <p-column field="endereco.cidade" header="Cidade"></p-column>
+        <p-column field="endereco.estado" header="Estado"></p-column>
+        <p-column field="ativo" header="Status">
+          <ng-template let-pes="rowData" pTemplate="body">
+              <a href="javascript:;" [pTooltip]="pes.ativo ? 'Desativar' : 'Ativar'"
+                  tooltipPosition="top">
+                {{ pes.ativo ? 'Ativo' : 'Inativo' }}
+              </a>
+          </ng-template>
+        </p-column>
+        <p-column styleClass="col-acoes">
+          <ng-template pTemplate="body" let-lanc="rowData">
+            <a pButton icon="fa-pencil" pTooltip="Editar" tooltipPosition="top"></a>
+            <button pButton icon="fa-trash" pTooltip="Excluir" tooltipPosition="top" (click)="confirmarExclusao(lanc)"></button>
+          </ng-template>
+        </p-column>
+    </p-dataTable>
+
     </div>
 
     <div class="ui-g-12">

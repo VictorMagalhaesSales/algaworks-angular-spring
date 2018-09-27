@@ -15,7 +15,9 @@ export class PessoaService {
         const headers = new Headers();
         headers.append('Authorization', 'Basic YWRtaW5AYWxnYW1vbmV5LmNvbTphZG1pbg==');
 
-        
+        params.set('page', filtro.pagina.toString());
+        params.set('size', filtro.itensPorPagina.toString());
+
         if (filtro.nome) {
             params.set('nome', filtro.nome);
         }
@@ -24,7 +26,26 @@ export class PessoaService {
             .toPromise()
             .then(resposta => resposta.json());
     }
-    
+
+
+  listarTodas(): Promise<any> {
+    const headers = new Headers();
+    headers.append('Authorization', 'Basic YWRtaW5AYWxnYW1vbmV5LmNvbTphZG1pbg==');
+
+    return this.http.get(this.url, { headers })
+      .toPromise()
+      .then(response => response.json().content);
+  }
+
+    excluir(codigo: number): Promise<any>{
+      const headers = new  Headers();
+      headers.append('Authorization', 'Basic YWRtaW5AYWxnYW1vbmV5LmNvbTphZG1pbg==');
+
+      return this.http.delete(`${this.url}/${codigo}`, { headers })
+        .toPromise()
+        .then(() => null);
+    }
+
 }
 
 export class PessoaFiltro {
