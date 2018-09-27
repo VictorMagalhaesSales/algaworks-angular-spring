@@ -7,5 +7,5 @@ org.eclipse.jdt.core.classpathVariable.JRE_LIB=C\:/Program Files/Java/jdk1.8.0_1
 org.eclipse.jdt.core.classpathVariable.JRE_SRC=C\:/Program Files/Java/jdk1.8.0_181/src.zip
 org.eclipse.jdt.core.classpathVariable.JRE_SRCROOT=
 org.eclipse.jdt.core.classpathVariable.JUNIT_HOME=C\:/sts-bundle/sts-3.9.5.RELEASE/plugins/org.junit_4.12.0.v201504281640/
-org.eclipse.jdt.core.classpathVariable.M2_REPO=C\:/Users/victor.sales/.m2/repository
+org.eclipse.jdt.core.classpathVariable.M2_REPO=C\:/Users/Victor/.m2/repository
 org.eclipse.jdt.core.codeComplete.visibilityCheck=enabled
