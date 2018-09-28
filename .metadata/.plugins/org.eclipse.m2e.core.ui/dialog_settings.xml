@@ -14,8 +14,8 @@
 	</section>
 	<section name="MavenProjectImportWizardPage">
 		<list key="rootDirectory">
-			<item value="C:\MV\git\saude-publica-html5-parent"/>
 			<item value="C:\Users\victor.sales\Desktop\SistemaAlgaWorks"/>
+			<item value="C:\MV\git\saude-publica-html5-parent"/>
 		</list>
 		<list key="projectNameTemplate">
 			<item value="[artifactId]"/>
