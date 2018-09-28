@@ -18,3 +18,5 @@ export class CategoriaService {
       .toPromise()
       .then(response => response.json());
   }
+
+}

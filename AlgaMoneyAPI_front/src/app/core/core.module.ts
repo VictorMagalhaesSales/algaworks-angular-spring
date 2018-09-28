@@ -1,3 +1,4 @@
+import { RouterModule } from '@angular/router';
 import { ConfirmationService } from 'primeng/components/common/api';
 import { PessoaService } from './../pessoas/pessoa.service';
 import { LancamentoService } from './../lancamentos/lancamento.service';
@@ -12,6 +13,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 @NgModule({
   imports: [
     CommonModule,
+    RouterModule,
 
     ToastyModule.forRoot(),
     ConfirmDialogModule,

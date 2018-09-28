@@ -1,22 +1,23 @@
-import { NavbarComponent } from './core/navbar/navbar.component';
-import { PessoaService } from './pessoas/pessoa.service';
-import { LancamentoService } from './lancamentos/lancamento.service';
+import { PessoasPesquisaComponent } from './pessoas/pessoas-pesquisa/pessoas-pesquisa.component';
+import { LancamentoCadastroComponent } from './lancamentos/lancamento-cadastro/lancamento-cadastro.component';
+import { LancamentosPesquisaComponent } from './lancamentos/lancamentos-pesquisa/lancamentos-pesquisa.component';
+import { CategoriaService } from './categorias/categoria.service';
 import { HttpModule } from '@angular/http';
-import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
-
-import { ConfirmDialogModule } from 'primeng/components/confirmdialog/confirmdialog';
-import { ConfirmationService } from 'primeng/components/common/api';
-import { ToastyModule } from 'ng2-toasty';
+import { Routes, RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { PessoasModule } from './pessoas/pessoas.module';
 import { LancamentosModule } from './lancamentos/lancamentos.module';
-import { LOCALE_ID } from '@angular/core';
+
+const routes: Routes = [
+  { path: 'lancamentos', component: LancamentosPesquisaComponent },
+  { path: 'lancamentos/novo', component: LancamentoCadastroComponent },
+  { path: 'pessoas', component: PessoasPesquisaComponent }
+];
 
 @NgModule({
   declarations: [
@@ -26,12 +27,13 @@ import { LOCALE_ID } from '@angular/core';
     BrowserModule,
     BrowserAnimationsModule,
     HttpModule,
+    RouterModule.forRoot(routes),
 
     CoreModule,
     LancamentosModule,
     PessoasModule,
   ],
-  providers: [],
+  providers: [CategoriaService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
