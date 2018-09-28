@@ -65,6 +65,14 @@ export class PessoasPesquisaComponent {
       .catch(erro => this.errorHandler.handle(erro));
   }
 
+  mudarAtivado(pessoa: any): void{
+    pessoa.ativo = !pessoa.ativo;
+    const status = pessoa.ativo === true ? 'ativado' : 'desativado' ;
+    this.pessoaService.mudarStatus(pessoa.codigo, pessoa.ativo)
+      .then(() => this.toasty.success(`Pesssoa ${status} com sucesso!`) )
+      .catch(erro => this.errorHandler.handle(erro));
+  }
+
 
 
 }

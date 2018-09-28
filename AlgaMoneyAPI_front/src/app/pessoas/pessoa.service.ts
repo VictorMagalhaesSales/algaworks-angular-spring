@@ -27,21 +27,30 @@ export class PessoaService {
             .then(resposta => resposta.json());
     }
 
+    listarTodas(): Promise<any> {
+      const headers = new Headers();
+      headers.append('Authorization', 'Basic YWRtaW5AYWxnYW1vbmV5LmNvbTphZG1pbg==');
 
-  listarTodas(): Promise<any> {
-    const headers = new Headers();
-    headers.append('Authorization', 'Basic YWRtaW5AYWxnYW1vbmV5LmNvbTphZG1pbg==');
-
-    return this.http.get(this.url, { headers })
-      .toPromise()
-      .then(response => response.json().content);
-  }
+      return this.http.get(this.url, { headers })
+        .toPromise()
+        .then(response => response.json().content);
+    }
 
     excluir(codigo: number): Promise<any>{
       const headers = new  Headers();
       headers.append('Authorization', 'Basic YWRtaW5AYWxnYW1vbmV5LmNvbTphZG1pbg==');
 
       return this.http.delete(`${this.url}/${codigo}`, { headers })
+        .toPromise()
+        .then(() => null);
+    }
+
+    mudarStatus(codigo: number, ativo: boolean): Promise<void> {
+      const headers = new Headers();
+      headers.append('Authorization', 'Basic YWRtaW5AYWxnYW1vbmV5LmNvbTphZG1pbg==');
+      headers.append('Content-Type', 'application/json');
+
+      return this.http.put(`${this.url}/${codigo}/ativo`, ativo, { headers })
         .toPromise()
         .then(() => null);
     }

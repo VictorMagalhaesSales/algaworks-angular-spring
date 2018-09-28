@@ -1,4 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <aop-reference-model>
-<aop-project name="AlgaMoneyAPI_back"/>
+<aop-project name="consultas-exames-server-service"/>
+<aop-project name="apac-server-service">
+<aspect-definition advice-class-name="br.com.mv.html5.commons.core.generic.server.repository.interceptor.AcentuacaoInterceptorHandler" advice-method-name="alterarParametrosAcentuacaoOrdenacao(org.aspectj.lang.ProceedingJoinPoint)" advice-type="AROUND" aspect-end-line-number="19" aspect-name="acentuacaoInterceptorHandler" aspect-start-line-number="19" factory-id="org.springframework.ide.eclipse.aop.core.annotationAspectDefinitionElementFactory" file="/generic-server-business/src/main/java/br/com/mv/html5/commons/core/generic/server/repository/interceptor/AcentuacaoInterceptorHandler.java" pointcut-expression="@annotation(AcentuacaoInterceptor)" proxy-target-class="true">
+<aop-reference advice-type="AROUND" bean="1:BeansModel|2:apac-server-service|3:java:br.com.mv.html5.regulacao.apac.Application|8:centralApacRepositoryImpl:24" bean-file="/apac-server-service/src/main/java/br/com/mv/html5/regulacao/apac/Application.java" bean-start-line="24" factory-id="org.springframework.ide.eclipse.aop.core.aopReferenceElementFactory" file="/apac-server-service/src/main/java/br/com/mv/html5/regulacao/apac/Application.java" source="=generic-server-business/src\/main\/java&lt;br.com.mv.html5.commons.core.generic.server.repository.interceptor{AcentuacaoInterceptorHandler.java[AcentuacaoInterceptorHandler~alterarParametrosAcentuacaoOrdenacao~QProceedingJoinPoint;" source-start-line="22" target="=apac-server-business/src\/main\/java&lt;br.com.mv.html5.regulacao.apac.repository{CentralApacRepositoryImpl.java[CentralApacRepositoryImpl~findAllCentraisApac~QString;~QString;~QString;~QPageable;" target-start-line="19"/>
+<aop-reference advice-type="AROUND" bean="1:BeansModel|2:apac-server-service|3:java:br.com.mv.html5.regulacao.apac.Application|8:solicitacaoApacRepositoryImpl:24" bean-file="/apac-server-service/src/main/java/br/com/mv/html5/regulacao/apac/Application.java" bean-start-line="24" factory-id="org.springframework.ide.eclipse.aop.core.aopReferenceElementFactory" file="/apac-server-service/src/main/java/br/com/mv/html5/regulacao/apac/Application.java" source="=generic-server-business/src\/main\/java&lt;br.com.mv.html5.commons.core.generic.server.repository.interceptor{AcentuacaoInterceptorHandler.java[AcentuacaoInterceptorHandler~alterarParametrosAcentuacaoOrdenacao~QProceedingJoinPoint;" source-start-line="22" target="=apac-server-business/src\/main\/java&lt;br.com.mv.html5.regulacao.apac.repository{SolicitacaoApacRepositoryImpl.java[SolicitacaoApacRepositoryImpl~findPage~QSolicitacaoApacDTO;~QPageable;" target-start-line="57"/>
+<aop-reference advice-type="AROUND" bean="1:BeansModel|2:apac-server-service|3:java:br.com.mv.html5.regulacao.apac.Application|8:codigoOrgaoEmissorRepositoryImpl:24" bean-file="/apac-server-service/src/main/java/br/com/mv/html5/regulacao/apac/Application.java" bean-start-line="24" factory-id="org.springframework.ide.eclipse.aop.core.aopReferenceElementFactory" file="/apac-server-service/src/main/java/br/com/mv/html5/regulacao/apac/Application.java" source="=generic-server-business/src\/main\/java&lt;br.com.mv.html5.commons.core.generic.server.repository.interceptor{AcentuacaoInterceptorHandler.java[AcentuacaoInterceptorHandler~alterarParametrosAcentuacaoOrdenacao~QProceedingJoinPoint;" source-start-line="22" target="=apac-server-business/src\/main\/java&lt;br.com.mv.html5.regulacao.apac.repository{CodigoOrgaoEmissorRepositoryImpl.java[CodigoOrgaoEmissorRepositoryImpl~findPage~QCodigoOrgaoEmissorDTO;~QPageable;" target-start-line="18"/>
+</aspect-definition>
+</aop-project>
+<aop-project name="consultas-exames-server-business"/>
+<aop-project name="controle-acesso-sso"/>
+<aop-project name="ue-samu-ws"/>
+<aop-project name="controle-avaliacao-server-service"/>
+<aop-project name="apac-server-business"/>
+<aop-project name="cadastros-basicos-server-business"/>
+<aop-project name="regulador-server-business"/>
+<aop-project name="regulacao-base-server-service"/>
+<aop-project name="generic-server-business"/>
+<aop-project name="regulador-reports"/>
+<aop-project name="controle-acesso-autorizacao-server-service"/>
+<aop-project name="controle-avaliacao-server-business"/>
+<aop-project name="cadastros-basicos-server-service"/>
+<aop-project name="regulacao-base-server-business"/>
+<aop-project name="apac-reports"/>
+<aop-project name="controle-acesso-autorizacao-server-business"/>
+<aop-project name="regulador-server-service"/>
+<aop-project name="generic-server-service"/>
 </aop-reference-model>

@@ -9,37 +9,6 @@
 <item elementID="=AlgaMoneyAPI_back/src\/test\/java" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 <item elementID="=AlgaMoneyAPI_back/.apt_generated_tests" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 </workingSet>
-<workingSet editPageId="org.eclipse.ui.resourceWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1538076385204_3" label="saude-publica-html5-parent" name="saude-publica-html5-parent">
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/saude-publica-html5-parent" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/commons" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/core" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/generic-server-business" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/generic-server-service" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/controle-acesso-autorizacao" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/controle-acesso-autorizacao-server-business" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/controle-acesso-autorizacao-server-service" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/controle-acesso-sso" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/cadastros-basicos" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/cadastros-basicos-server-business" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/cadastros-basicos-server-service" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/regulacao-base" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/regulacao-base-server-business" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/regulacao-base-server-service" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/controle-avaliacao" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/controle-avaliacao-server-business" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/controle-avaliacao-server-service" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/apac" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/apac-server-business" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/apac-server-service" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/apac-reports" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/ue-samu-ws" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/regulador" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/regulador-server-business" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/regulador-server-service" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/regulador-reports" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/consultas-exames" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/consultas-exames-server-business" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/consultas-exames-server-service" type="4"/>
-</workingSet>
+<workingSet editPageId="org.eclipse.ui.resourceWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1538076385204_3" label="saude-publica-html5-parent" name="saude-publica-html5-parent"/>
 <workingSet aggregate="true" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1537979107147_2" label="Window Working Set" name="Aggregate for window 1537979107147"/>
 </workingSetManager>
