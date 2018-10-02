@@ -1,10 +1,11 @@
 import { Title } from '@angular/platform-browser';
-import { ToastyService } from 'ng2-toasty';
-import { ErrorHandlerService } from './../../core/error-handler.service';
-import { ConfirmationService } from 'primeng/components/common/api';
-import { LazyLoadEvent } from 'primeng/components/common/lazyloadevent';
-import { PessoaService, PessoaFiltro } from './../pessoa.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
+
+import { LazyLoadEvent, ConfirmationService } from 'primeng/components/common/api';
+import { ToastyService } from 'ng2-toasty';
+
+import { ErrorHandlerService } from './../../core/error-handler.service';
+import { PessoaFiltro, PessoaService } from './../pessoa.service';
 
 @Component({
   selector: 'app-pessoas-pesquisa',
@@ -13,9 +14,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 })
 export class PessoasPesquisaComponent implements OnInit {
 
-  totalDeRegistros = 0;
+  totalRegistros = 0;
   filtro = new PessoaFiltro();
-  pessoas = [ ];
+  pessoas = [];
   @ViewChild('tabela') grid;
 
   constructor(
@@ -30,16 +31,18 @@ export class PessoasPesquisaComponent implements OnInit {
     this.title.setTitle('Pesquisa de pessoas');
   }
 
-  pesquisar(pagina = 0){
+  pesquisar(pagina = 0) {
     this.filtro.pagina = pagina;
+
     this.pessoaService.pesquisar(this.filtro)
-      .then(resposta => {
-        this.pessoas = resposta.content;
-        this.totalDeRegistros = resposta.totalElements;
-      });
+      .then(resultado => {
+        this.totalRegistros = resultado.total;
+        this.pessoas = resultado.pessoas;
+      })
+      .catch(erro => this.errorHandler.handle(erro));
   }
 
-  aoMudarPagina(event: LazyLoadEvent){
+  aoMudarPagina(event: LazyLoadEvent) {
     const pagina = event.first / event.rows;
     this.pesquisar(pagina);
   }
@@ -67,14 +70,17 @@ export class PessoasPesquisaComponent implements OnInit {
       .catch(erro => this.errorHandler.handle(erro));
   }
 
-  mudarAtivado(pessoa: any): void{
-    pessoa.ativo = !pessoa.ativo;
-    const status = pessoa.ativo === true ? 'ativado' : 'desativado' ;
-    this.pessoaService.mudarStatus(pessoa.codigo, pessoa.ativo)
-      .then(() => this.toasty.success(`Pesssoa ${status} com sucesso!`) )
+  alternarStatus(pessoa: any): void {
+    const novoStatus = !pessoa.ativo;
+
+    this.pessoaService.mudarStatus(pessoa.codigo, novoStatus)
+      .then(() => {
+        const acao = novoStatus ? 'ativada' : 'desativada';
+
+        pessoa.ativo = novoStatus;
+        this.toasty.success(`Pessoa ${acao} com sucesso!`);
+      })
       .catch(erro => this.errorHandler.handle(erro));
   }
-
-
 
 }

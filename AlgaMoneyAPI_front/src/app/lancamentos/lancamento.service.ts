@@ -1,9 +1,11 @@
-import { Lancamento } from './../core/model';
-import { Http, Headers, URLSearchParams } from '@angular/http';
+import { URLSearchParams } from '@angular/http';
 import { Injectable } from '@angular/core';
 
-import 'rxjs/add/operator/toPromise';
+import { AuthHttp } from 'angular2-jwt';
 import * as moment from 'moment';
+import 'rxjs/add/operator/toPromise';
+
+import { Lancamento } from './../core/model';
 
 export class LancamentoFiltro {
   descricao: string;
@@ -11,21 +13,17 @@ export class LancamentoFiltro {
   dataVencimentoFim: Date;
   pagina = 0;
   itensPorPagina = 5;
-
 }
 
 @Injectable()
 export class LancamentoService {
 
-  url = 'http://localhost:8080/lancamentos';
+  lancamentosUrl = 'http://localhost:8080/lancamentos';
 
-  constructor(private http: Http) { }
+  constructor(private http: AuthHttp) { }
 
   pesquisar(filtro: LancamentoFiltro): Promise<any> {
     const params = new URLSearchParams();
-    const headers = new Headers();
-
-    headers.append('Authorization', 'Basic YWRtaW5AYWxnYW1vbmV5LmNvbTphZG1pbg==');
 
     params.set('page', filtro.pagina.toString());
     params.set('size', filtro.itensPorPagina.toString());
@@ -35,46 +33,47 @@ export class LancamentoService {
     }
 
     if (filtro.dataVencimentoInicio) {
-      params.set('dataVencimentoDe', moment(filtro.dataVencimentoInicio).format('YYYY-MM-DD'));
+      params.set('dataVencimentoDe',
+        moment(filtro.dataVencimentoInicio).format('YYYY-MM-DD'));
     }
 
     if (filtro.dataVencimentoFim) {
-      params.set('dataVencimentoAte', moment(filtro.dataVencimentoFim).format('YYYY-MM-DD'));
+      params.set('dataVencimentoAte',
+        moment(filtro.dataVencimentoFim).format('YYYY-MM-DD'));
     }
 
-    return this.http.get(`${this.url}?resumo`,
-        { headers, search: params })
+    return this.http.get(`${this.lancamentosUrl}?resumo`,
+        { search: params })
       .toPromise()
-      .then(response => response.json())
+      .then(response => {
+        const responseJson = response.json();
+        const lancamentos = responseJson.content;
+
+        const resultado = {
+          lancamentos,
+          total: responseJson.totalElements
+        };
+
+        return resultado;
+      });
   }
 
-  excluir(codigo: number): Promise<any>{
-    const headers = new  Headers();
-    headers.append('Authorization', 'Basic YWRtaW5AYWxnYW1vbmV5LmNvbTphZG1pbg==');
-
-    return this.http.delete(`${this.url}/${codigo}`, { headers })
+  excluir(codigo: number): Promise<void> {
+    return this.http.delete(`${this.lancamentosUrl}/${codigo}`)
       .toPromise()
       .then(() => null);
   }
 
   adicionar(lancamento: Lancamento): Promise<Lancamento> {
-    const headers = new Headers();
-    headers.append('Authorization', 'Basic YWRtaW5AYWxnYW1vbmV5LmNvbTphZG1pbg==');
-    headers.append('Content-Type', 'application/json');
-
-    return this.http.post(this.url,
-        JSON.stringify(lancamento), { headers })
+    return this.http.post(this.lancamentosUrl,
+        JSON.stringify(lancamento))
       .toPromise()
       .then(response => response.json());
   }
 
   atualizar(lancamento: Lancamento): Promise<Lancamento> {
-    const headers = new Headers();
-    headers.append('Authorization', 'Basic YWRtaW5AYWxnYW1vbmV5LmNvbTphZG1pbg==');
-    headers.append('Content-Type', 'application/json');
-
-    return this.http.put(`${this.url}/${lancamento.codigo}`,
-        JSON.stringify(lancamento), { headers })
+    return this.http.put(`${this.lancamentosUrl}/${lancamento.codigo}`,
+        JSON.stringify(lancamento))
       .toPromise()
       .then(response => {
         const lancamentoAlterado = response.json() as Lancamento;
@@ -86,10 +85,7 @@ export class LancamentoService {
   }
 
   buscarPorCodigo(codigo: number): Promise<Lancamento> {
-    const headers = new Headers();
-    headers.append('Authorization', 'Basic YWRtaW5AYWxnYW1vbmV5LmNvbTphZG1pbg==');
-
-    return this.http.get(`${this.url}/${codigo}`, { headers })
+    return this.http.get(`${this.lancamentosUrl}/${codigo}`)
       .toPromise()
       .then(response => {
         const lancamento = response.json() as Lancamento;
