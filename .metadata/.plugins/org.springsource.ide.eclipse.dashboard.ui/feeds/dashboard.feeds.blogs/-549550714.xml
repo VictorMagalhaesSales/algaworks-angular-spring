@@ -5,16 +5,134 @@
   <link rel="self" href="https://spring.io/blog.atom" />
   <id>http://spring.io/blog.atom</id>
   <icon>https://spring.io/favicon.ico</icon>
-  <updated>2018-09-27T15:00:16Z</updated>
+  <updated>2018-10-02T14:06:00Z</updated>
+  <entry>
+    <title>The evolution of Spring Fu</title>
+    <link rel="alternate" href="https://spring.io/blog/2018/10/02/the-evolution-of-spring-fu" />
+    <category term="engineering" label="Engineering" />
+    <author>
+      <name>Sébastien Deleuze</name>
+    </author>
+    <id>tag:spring.io,2018-10-02:3420</id>
+    <updated>2018-10-02T14:06:00Z</updated>
+    <content type="html">&lt;p&gt;I take the opportunity of a short stop between &lt;a href="https://springoneplatform.io"&gt;SpringOne platform&lt;/a&gt; where I gave the first talk about Spring Fu and &lt;a href="https://kotlinconf.com/"&gt;Kotlinconf&lt;/a&gt; to give an overview of the evolution of this project, summarize the current status and share what could be the next steps.&lt;/p&gt;
+&lt;p&gt;Early June, I announced a new experimental project named &lt;a href="https://github.com/spring-projects/spring-fu"&gt;Spring Fu&lt;/a&gt;, with the goal to experiment on a new kind of API to configure Spring applications using Kotlin DSL and functional configuration.&lt;/p&gt;
+&lt;p&gt;&lt;blockquote class="twitter-tweet" data-cards="hidden" data-lang="en"&gt;&lt;p lang="en" dir="ltr"&gt;Today, I am proud to announce a new experimental project: Spring Fu. It is a &lt;a href="https://twitter.com/kotlin?ref_src=twsrc%5Etfw"&gt;@Kotlin&lt;/a&gt; micro-framework that makes it easy to create lightweight Spring-powered applications with functional APIs instead of annotations. We are looking for feedback. &lt;a href="https://t.co/R15wJ1gD8K"&gt;&lt;a href="https://t.co/R15wJ1gD8K"&gt;https://t.co/R15wJ1gD8K&lt;/a&gt;&lt;/a&gt; &lt;a href="https://t.co/ScljoPZ8rW"&gt;pic.twitter.com/ScljoPZ8rW&lt;/a&gt;&lt;/p&gt;&amp;mdash; Sébastien Deleuze (@sdeleuze) &lt;a href="https://twitter.com/sdeleuze/status/1005072964822487040?ref_src=twsrc%5Etfw"&gt;June 8, 2018&lt;/a&gt;&lt;/blockquote&gt;&lt;br/&gt;&lt;script async src="https://platform.twitter.com/widgets.js" charset="utf-8"&gt;&lt;/script&gt;&lt;/p&gt;
+&lt;p&gt;I must admit I was not expecting the huge wave of feedback that followed, and I would like to thank the Spring community for such warm welcome. I have continued since to work on the project in order to turn this first POC based on raw Spring Framework API into an incubator for new Spring functional features.&lt;/p&gt;&lt;h2&gt;&lt;a href="#kofu-configuration" class="anchor" name="kofu-configuration"&gt;&lt;/a&gt;Kofu configuration&lt;/h2&gt;
+&lt;p&gt;The Kotlin DSL is now based on Spring Boot infrastructure and is called Kofu (for &lt;strong&gt;Ko&lt;/strong&gt;tlin and &lt;strong&gt;fu&lt;/strong&gt;nctional). It allows to configure Spring Boot applications with a Kotlin DSL and lambdas instead of annotations and have following characteristics:&lt;br/&gt; - Explicit configuration via a Kotlin DSL&lt;br/&gt; - Based on Spring Boot infrastructure used in a functional way&lt;br/&gt; - No feature enabled based on classpath detection&lt;br/&gt; - Both declarative and programmatic&lt;br/&gt; - Faster startup and lower memory consumption&lt;br/&gt; - Minimal reflection &amp;amp; annotations usage&lt;br/&gt; - Pure lambdas, no CGLIB proxy&lt;/p&gt;
+&lt;p&gt;A typical Spring Boot application configured with Kofu configuration looks like that:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="prettyprint kotlin"&gt;val app = application {&#xD;
+  import(beans)&#xD;
+  listener&amp;lt;ApplicationReadyEvent&amp;gt; {&#xD;
+    ref&amp;lt;UserRepository&amp;gt;().init()&#xD;
+  }&#xD;
+  properties&amp;lt;SampleProperties&amp;gt;(&amp;quot;sample&amp;quot;)&#xD;
+  server {&#xD;
+    port = if (profiles.contains(&amp;quot;test&amp;quot;)) 8181 else 8080&#xD;
+    mustache()&#xD;
+    codecs {&#xD;
+      string()&#xD;
+      jackson {&#xD;
+        indentOutput = true&#xD;
+      }&#xD;
+    }&#xD;
+    import(::routes)&#xD;
+  }&#xD;
+  mongodb {&#xD;
+    embedded()&#xD;
+  }&#xD;
+}&#xD;
+&#xD;
+val beans = beans {&#xD;
+  bean&amp;lt;UserRepository&amp;gt;()&#xD;
+  bean&amp;lt;UserHandler&amp;gt;()&#xD;
+}&#xD;
+&#xD;
+fun routes(userHandler: UserHandler) = router {&#xD;
+  GET(&amp;quot;/&amp;quot;, userHandler::listView)&#xD;
+  GET(&amp;quot;/api/user&amp;quot;, userHandler::listApi)&#xD;
+  GET(&amp;quot;/conf&amp;quot;, userHandler::conf)&#xD;
+}&#xD;
+&#xD;
+fun main() = app.run()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In order to use it, you &amp;ldquo;just&amp;rdquo; have to add a &lt;code&gt;org.springframework.fu:spring-boot-kofu&lt;/code&gt; dependency to a Spring Boot 2.1 application. As the current version number &lt;code&gt;0.0.2&lt;/code&gt; suggests it, be aware that for now the API is not stable yet, not suitable for production and that the scope is limited to a subset of what Spring Boot supports.&lt;/p&gt;
+&lt;p&gt;But feel free to play with it, send feedback and try this new way of configuring Spring Boot applications which is functional, discoverable via your IDE auto-complete and &lt;a href="http://repo.spring.io/milestone/org/springframework/fu/spring-boot-kofu/0.0.2/spring-boot-kofu-0.0.2-javadoc.jar!/kofu/org.springframework.boot.kofu/application.html"&gt;documented&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Kofu is not better or worse than auto-config, it is just different. I believe it could be a way for Spring Boot to reach developers who prefer a more explicit configuration model and those who are coming from other backgrounds like Kotlin, Go, Node or Ruby.&lt;/p&gt;&lt;h2&gt;&lt;a href="#jafu-configuration" class="anchor" name="jafu-configuration"&gt;&lt;/a&gt;Jafu configuration&lt;/h2&gt;
+&lt;p&gt;Initially limited to Kotlin, one of the main feedback I received was from Java developers interested in this explicit DSL approach as well, so I worked on a Java equivalent and ended up with this Jafu (for &lt;strong&gt;Ja&lt;/strong&gt;va and &lt;strong&gt;fu&lt;/strong&gt;nctional) DSL.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="prettyprint java"&gt;public class JafuApplication {&#xD;
+&#xD;
+  public static SpringApplication app = application(app -&amp;gt; {&#xD;
+    app.beans(beans -&amp;gt; {&#xD;
+      beans.bean(SampleService.class);&#xD;
+      beans.bean(SampleHandler.class);&#xD;
+    });&#xD;
+    app.server(server -&amp;gt; server.router(router -&amp;gt; {&#xD;
+      SampleHandler sampleHandler = app.ref(SampleHandler.class);&#xD;
+      router.GET(&amp;quot;/&amp;quot;, sampleHandler::hello);&#xD;
+      router.resources(&amp;quot;/**&amp;quot;, new ClassPathResource(&amp;quot;static/&amp;quot;));&#xD;
+    }));&#xD;
+  });&#xD;
+&#xD;
+  public static void main (String[] args) {&#xD;
+    app.run(args);&#xD;
+  }&#xD;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This is currently just a POC but I plan to reach feature parity shortly with Kofu and develop the 2 DSLs in parallel. The lack of &lt;a href="https://kotlinlang.org/docs/reference/type-safe-builders.html"&gt;type-safe builders&lt;/a&gt;, &lt;a href="https://kotlinlang.org/docs/reference/inline-functions.html#reified-type-parameters"&gt;reified type parameters&lt;/a&gt; or &lt;a href="https://kotlinlang.org/docs/reference/extensions.html#extensions"&gt;extension mechanism&lt;/a&gt; will make Jafu more verbose and less extensible than Kofu, but despite these limitations, I find Jafu pretty nice and usable.&lt;/p&gt;
+&lt;p&gt;For users only interested by the performance increase linked to the usage of a functional bean registration infrastructure, it is worth to notice than &lt;a href="https://github.com/dsyer"&gt;Dave Syer&lt;/a&gt; is currently &lt;a href="https://github.com/dsyer/spring-init-experiment"&gt;experimenting&lt;/a&gt; on solutions that would make it possible to leverage functional bean registration efficiency with regular Spring Boot applications based on annotations.&lt;/p&gt;&lt;h2&gt;&lt;a href="#running-spring-applications-as-native-executable" class="anchor" name="running-spring-applications-as-native-executable"&gt;&lt;/a&gt;Running Spring applications as native executable&lt;/h2&gt;
+&lt;p&gt;&lt;a href="https://www.graalvm.org/"&gt;GraalVM&lt;/a&gt; is a new virtual machine developed by Oracle, which allows among other features, to compile JVM bytecode to native executable via &lt;a href="https://github.com/oracle/graal/tree/master/substratevm"&gt;Substratevm&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Spring Framework 5.1 provides some &lt;a href="https://jira.spring.io/browse/SPR-16991"&gt;initial support&lt;/a&gt; for GraalVM native images, but we are really at the beginning of the story. GraalVM team need to fix various issues raised by Dave in order to get everything working as expected, and the ecosystem needs to adap to this new platform which has different constraints and characteristics.&lt;/p&gt;
+&lt;p&gt;But GraalVM team is listening our feedback, and Spring application support has progressed significantly these last months. It is already possible to compile a basic Spring Boot reactive application with Kofu configuration as a native executable that runs almost instantly!&lt;/p&gt;
+&lt;p&gt;&lt;blockquote class="twitter-tweet" data-lang="en"&gt;&lt;p lang="en" dir="ltr"&gt;I&amp;#39;m playing with spring-fu at Dulles airport.&lt;br&gt;Look how fast it is! It&amp;#39;s insane.., &lt;a href="https://t.co/CTyKEr4d4O"&gt;pic.twitter.com/CTyKEr4d4O&lt;/a&gt;&lt;/p&gt;&amp;mdash; Toshiaki Maki (@making) &lt;a href="https://twitter.com/making/status/1045683585389277184?ref_src=twsrc%5Etfw"&gt;September 28, 2018&lt;/a&gt;&lt;/blockquote&gt;&lt;br/&gt;&lt;script async src="https://platform.twitter.com/widgets.js" charset="utf-8"&gt;&lt;/script&gt;&lt;/p&gt;&lt;h2&gt;&lt;a href="#coroutines-support" class="anchor" name="coroutines-support"&gt;&lt;/a&gt;Coroutines support&lt;/h2&gt;
+&lt;p&gt;Like said before, the main goal of Spring Fu is to incubate features that will be integrated in current top level projects like Spring Framework, Spring Data and Spring Boot.&lt;/p&gt;
+&lt;p&gt;Spring Fu is currently incubating coroutines support for Spring WebFlux and Spring Data in order to be able to leverage Spring Reactive stack in a more imperative style fashion. This mainly targets developers who want to leverage the scalability of such stack without requiring all the power of reactive API.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="prettyprint kotlin"&gt;class UserRepository(private val mongo: CoroutinesMongoTemplate) {&#xD;
+	suspend fun count(): Long = mongo.count&amp;lt;User&amp;gt;()&#xD;
+	suspend fun findAll(): List&amp;lt;User&amp;gt; = mongo.findAll&amp;lt;User&amp;gt;()&#xD;
+	suspend fun findOne(id: String): User? = mongo.findById&amp;lt;User&amp;gt;(id)&#xD;
+	suspend fun deleteAll() = mongo.remove&amp;lt;User&amp;gt;()&#xD;
+	suspend fun save(user: User): User? = mongo.save(user)&#xD;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Be aware that while coroutines are considered final as of Kotlin 1.3, there is still a major missing piece in &lt;code&gt;kotlinx-coroutines&lt;/code&gt; since it does not provide any type to deal with cold streams. We will need this missing abstraction in order to be able to expose our reactive foundations with a coroutines API, see &lt;a href="https://github.com/Kotlin/kotlinx.coroutines/issues/254"&gt;kotlinx.coroutines#254&lt;/a&gt; for more details.&lt;/p&gt;
+&lt;p&gt;Notice that we should be able to &lt;a href="https://github.com/Kotlin/kotlinx.coroutines/issues/284"&gt;pass context between coroutines and reactor types&lt;/a&gt; in order to allow pretty powerful use cases like reactive security and transactions.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/konrad-kaminski"&gt;Konrad Kaminski&lt;/a&gt; who contributed the original Spring coroutines support via his great &lt;a href="https://github.com/konrad-kaminski/spring-kotlin-coroutine"&gt;spring-kotlin-coroutine&lt;/a&gt; project will shortly join Spring Fu to work on this feature with me.&lt;/p&gt;&lt;h2&gt;&lt;a href="#conclusion" class="anchor" name="conclusion"&gt;&lt;/a&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;I have just released &lt;a href="https://github.com/spring-projects/spring-fu/releases/tag/v0.0.2"&gt;Spring Fu 0.0.2&lt;/a&gt; which provides an improved Kofu DSL and introduces &lt;a href="https://jira.spring.io/browse/SPR-17312"&gt;autowiring of function parameters&lt;/a&gt;. Feel free to try it and to provide feedback.&lt;/p&gt;
+&lt;p&gt;Upcoming &lt;a href="https://github.com/spring-projects/spring-fu/milestone/4"&gt;Spring Fu 0.0.3&lt;/a&gt; will provide feature parity between Kofu and Jafu configurations.&lt;/p&gt;
+&lt;p&gt;We already have &lt;a href="https://github.com/spring-projects/spring-fu/graphs/contributors"&gt;10+ community contributors&lt;/a&gt; who submitted pull requests to Spring Fu, so if you have some ideas you could maybe be the next ;-)&lt;/p&gt;
+&lt;p&gt;Looking forward meeting you in my upcoming Spring Fu talks at &lt;a href="https://jfuture.by/"&gt;JFuture&lt;/a&gt; (Minsk), &lt;a href="http://springfest2018.springframework.jp/"&gt;Spring Fest&lt;/a&gt; (Tokyo) and &lt;a href="https://dvbe18.confinabox.com/talk/TZU-3777/What's_cooking_in_Spring_Fu%3F"&gt;Devoxx&lt;/a&gt; (Antwerpen).&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>Spring Vault 2.1 GA released</title>
+    <link rel="alternate" href="https://spring.io/blog/2018/10/02/spring-vault-2-1-ga-released" />
+    <category term="releases" label="Releases" />
+    <author>
+      <name>Mark Paluch</name>
+    </author>
+    <id>tag:spring.io,2018-10-02:3419</id>
+    <updated>2018-10-02T09:10:28Z</updated>
+    <content type="html">&lt;p&gt;On behalf of the community, I&amp;rsquo;d like to announce the general availability of Spring Vault 2.1. Spring Vault 2.1 requires JDK 8 or higher and specifically supports JDK 11 as the next long-term support release. The most notable changes of Spring Vault 2.1 are:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Extending infrastructure-based authentication to support Google Cloud IAM and Azure Managed Service Identity.&lt;/li&gt;
+  &lt;li&gt;Integrating Vault’s versioned Key-Value backend.&lt;/li&gt;
+  &lt;li&gt;Wrapping API support.&lt;/li&gt;
+  &lt;li&gt;Java 11 compatibility.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This release is compatible with Vault versions from &lt;code&gt;0.5.2&lt;/code&gt; up to &lt;code&gt;0.11.1&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Make sure to also check out our &lt;a href="https://spring.io/blog/2018/09/24/hands-on-with-spring-vault-2-1"&gt;blog post that explains the new features in detail&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;For a complete list of changes see the &lt;a href="http://docs.spring.io/spring-vault/docs/2.1.0.RELEASE/changelog.txt"&gt;changelog&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://projects.spring.io/spring-vault/"&gt;Project Page&lt;/a&gt; | &lt;a href="https://github.com/spring-projects/spring-vault"&gt;GitHub&lt;/a&gt; | &lt;a href="https://github.com/spring-projects/spring-vault/issues"&gt;Issues&lt;/a&gt; | &lt;a href="http://docs.spring.io/spring-vault/docs/2.1.0.RELEASE/reference/html/"&gt;Documentation&lt;/a&gt; | &lt;a href="https://github.com/mp911de/spring-cloud-vault-config-samples/"&gt;Examples&lt;/a&gt; | &lt;a href="http://stackoverflow.com/questions/tagged/spring-vault"&gt;Stack Overflow&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
   <entry>
     <title>What's new in Spring Data Lovelace?</title>
     <link rel="alternate" href="https://spring.io/blog/2018/09/27/what-s-new-in-spring-data-lovelace" />
-    <category term="releases" label="Releases" />
+    <category term="engineering" label="Engineering" />
     <author>
       <name>Oliver Gierke</name>
     </author>
     <id>tag:spring.io,2018-09-18:3398</id>
-    <updated>2018-09-27T15:00:16Z</updated>
+    <updated>2018-09-27T15:00:00Z</updated>
     <content type="html">&lt;div class="paragraph"&gt;
 &lt;p&gt;With Spring Data Lovelace just released in its generally available version last week, it is time to have a brief walk through the new features we have added.
 The release train is pretty packed with features.
@@ -24,7 +142,7 @@ Advanced, store-specific news is covered in the following blog posts:&lt;/p&gt;
 &lt;div class="ulist"&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;a href="https://spring.io/blog/2018/09/24/spring-data-jdbc-references-and-aggregates"&gt;Jens Schauder introducing Spring Data JDBC&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://spring.io/blog/2018/09/17/introducing-spring-data-jdbc"&gt;Jens Schauder introducing Spring Data JDBC&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;a href="https://spring.io/blog/2018/09/24/spring-data-jdbc-references-and-aggregates"&gt;Jens again on how to model aggregates with Spring Data JDBC&lt;/a&gt;&lt;/p&gt;
@@ -663,7 +781,6 @@ public class ConsumerApplication implements ApplicationListener&amp;lt;Applicati
 &lt;p&gt;This blog post explains the new and noteworthy in &lt;a href="https://github.com/spring-projects/spring-data-commons/wiki/Release-Train-Lovelace"&gt;Spring Data Lovelace&lt;/a&gt; for &lt;a href="https://spring.io/blog/2018/09/26/what-s-new-in-spring-data-lovelace-for-redis-and-apache-cassandra#cassandra"&gt;Apache Cassandra&lt;/a&gt; and &lt;a href="https://spring.io/blog/2018/09/26/what-s-new-in-spring-data-lovelace-for-redis-and-apache-cassandra#redis"&gt;Redis&lt;/a&gt;.
 Make sure to also check out the blog post on &lt;a href="https://spring.io/blog/2018/09/27/what-s-new-in-spring-data-lovelace-for-mongodb"&gt;What&amp;#8217;s new in Spring Data Lovelace for MongoDB?&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
-&lt;h1 id="introduction" class="sect0"&gt;&lt;a class="anchor" href="#introduction"&gt;&lt;/a&gt;Introduction&lt;/h1&gt;
 &lt;div class="paragraph"&gt;
 &lt;p&gt;With Spring Data Lovelace just released in its generally available version last week, it&amp;#8217;s time to have a brief walk through the new feature&amp;#8217;s we have added.
 The release train is pretty packed with features.&lt;/p&gt;
@@ -856,7 +973,8 @@ class Dependance {
 
 operations.getTableName(Person::class)
 
-operations.find&amp;lt;Person&amp;gt;().as&amp;lt;Contact&amp;gt;.matching(query(where("firstname").isEqualTo("luke"))).all();&lt;/code&gt;&lt;/pre&gt;
+operations.find&amp;lt;Person&amp;gt;().as&amp;lt;Contact&amp;gt;
+  .matching(query(where("firstname").isEqualTo("luke"))).all();&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="paragraph"&gt;
@@ -948,13 +1066,13 @@ long count = select.count();&lt;/code&gt;&lt;/pre&gt;
 &lt;div class="listingblock"&gt;
 &lt;div class="content"&gt;
 &lt;pre class="prettyprint highlight"&gt;&lt;code class="language-java" data-lang="java"&gt;LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder()
-                          .readFrom(ReadFrom.NEAREST)
-                          .build();
+  .readFrom(ReadFrom.NEAREST)
+  .build();
 
 RedisSentinelConfiguration endpoint = new RedisSentinelConfiguration()
-                          .master("my-master")
-                          .sentinel("sentinel-host1", 26379)
-                          .sentinel("sentinel-host2", 26379);
+  .master("my-master")
+  .sentinel("sentinel-host1", 26379)
+  .sentinel("sentinel-host2", 26379);
 
 LettuceConnectionFactory factory = new LettuceConnectionFactory(endpoint, clientConfiguration);&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -970,8 +1088,8 @@ LettuceConnectionFactory factory = new LettuceConnectionFactory(endpoint, client
 &lt;pre class="prettyprint highlight"&gt;&lt;code class="language-java" data-lang="java"&gt;LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder().readFrom(ReadFrom.NEAREST).build();
 
 RedisStaticMasterSlaveConfiguration endpoint = new RedisStaticMasterSlaveConfiguration("my-master-host", 6379)
-                          .node("my-replica-host1", 6379)
-                          .node("my-replica-host2", 6379);
+  .node("my-replica-host1", 6379)
+  .node("my-replica-host2", 6379);
 
 LettuceConnectionFactory factory = new LettuceConnectionFactory(endpoint, clientConfiguration);&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -1027,7 +1145,8 @@ LettuceConnectionFactory factory = new LettuceConnectionFactory(clusterConfigura
 &lt;/div&gt;
 &lt;div class="listingblock"&gt;
 &lt;div class="content"&gt;
-&lt;pre class="prettyprint highlight"&gt;&lt;code class="language-java" data-lang="java"&gt;Cursor&amp;lt;byte[]&amp;gt; scan = clusterConnection.keyCommands().scan(ScanOptions.scanOptions().match("foo*").build());
+&lt;pre class="prettyprint highlight"&gt;&lt;code class="language-java" data-lang="java"&gt;Cursor&amp;lt;byte[]&amp;gt; scan = clusterConnection.keyCommands()
+  .scan(ScanOptions.scanOptions().match("foo*").build());
 scan.forEachRemaining(key -&amp;gt; …);&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -1182,7 +1301,7 @@ class Person {
       <name>Dave Syer</name>
     </author>
     <id>tag:spring.io,2018-09-25:3416</id>
-    <updated>2018-09-25T15:33:40Z</updated>
+    <updated>2018-09-25T15:33:00Z</updated>
     <content type="html">&lt;div class="paragraph"&gt;
 &lt;p&gt;&lt;a href="https://github.com/spring-cloud/spring-cloud-function"&gt;Spring Cloud
 Function&lt;/a&gt; has had support for Microsoft
@@ -1194,9 +1313,7 @@ background behind the shift. We in the Spring team had a lot of fun
 working on this and collaborating with the folks at Microsoft to get
 the best blend of the two technologies for our users.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="azure-functions-for-java"&gt;&lt;a class="anchor" href="#azure-functions-for-java"&gt;&lt;/a&gt;Azure Functions for Java&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
+&lt;h1 id="azure-functions-for-java" class="sect0"&gt;&lt;a class="anchor" href="#azure-functions-for-java"&gt;&lt;/a&gt;Azure Functions for Java&lt;/h1&gt;
 &lt;div class="paragraph"&gt;
 &lt;p&gt;Microsoft has had Java support in Azure Functions for a while, and it
 enables developers to easily write and deploy Java code that connects
@@ -1362,11 +1479,7 @@ sample. They are all important but basically boilerplate - you should
 be able to copy them and re-use the same configuration in all Azure
 Function Applications.&lt;/p&gt;
 &lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="spring-cloud-function"&gt;&lt;a class="anchor" href="#spring-cloud-function"&gt;&lt;/a&gt;Spring Cloud Function&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
+&lt;h1 id="spring-cloud-function" class="sect0"&gt;&lt;a class="anchor" href="#spring-cloud-function"&gt;&lt;/a&gt;Spring Cloud Function&lt;/h1&gt;
 &lt;div class="paragraph"&gt;
 &lt;p&gt;Spring Cloud Function aims to support similar serverless use cases
 when the application developer declares Spring beans of type
@@ -1498,8 +1611,6 @@ If you are at &lt;a href="https://springoneplatform.io"&gt;Spring One Platform&l
 &lt;/td&gt;
 &lt;/tr&gt;
 &lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;
 &lt;/div&gt;</content>
   </entry>
   <entry>
@@ -2586,161 +2697,5 @@ Book_Author (
 &lt;/ul&gt;
 &lt;p&gt;Detailed new and noteworthy notes can be found here: &lt;a href="http://docs.spring.io/sts/nan/v396/NewAndNoteworthy.html"&gt;STS 3.9.6 New &amp;amp; Noteworthy&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Enjoy!&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>Spring Web Services 3.0.4 / 2.4.3 released!</title>
-    <link rel="alternate" href="https://spring.io/blog/2018/09/19/spring-web-services-3-0-4-2-4-3-released" />
-    <category term="engineering" label="Engineering" />
-    <author>
-      <name>Greg Turnquist</name>
-    </author>
-    <id>tag:spring.io,2018-09-19:3402</id>
-    <updated>2018-09-19T19:24:17Z</updated>
-    <content type="html">&lt;div class="paragraph"&gt;
-&lt;p&gt;Greetings Spring community,&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;The Spring Web Services team is releasing two version at the same time. &lt;strong&gt;3.0.4.RELEASE&lt;/strong&gt; as the main branch of development along with &lt;strong&gt;2.4.3.RELEASE&lt;/strong&gt; for maintenance.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;3.0.4.RELEASE comes with a handful of features listed further below. It also comes with new support for &lt;strong&gt;Java 11&lt;/strong&gt;, the next long term supported version of Java.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="java-11-and-beyond"&gt;&lt;a class="anchor" href="#java-11-and-beyond"&gt;&lt;/a&gt;Java 11 and beyond&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;Starting in Java 9, several key Java EE packages had their visibility reduced. These included core XML and SOAP-based packages. In Java 11, these packages have been removed altogether. Since Java 11 is the first long term release since Java 8, it&amp;#8217;s the version Spring Web Services aligns with for corresponding long term support.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;What does this mean for you? To use Spring Web Services on Java 9+, you can no longer depend on the JDK providing key XML and SOAP-based libraries. Never fear, the solution is right here!&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;If you visit the project&amp;#8217;s build file, you&amp;#8217;ll discover a new &lt;a href="https://github.com/spring-projects/spring-ws/blob/master/pom.xml#L656-L711"&gt;Java 11 profile&lt;/a&gt;. This profile contains the extra dependencies you must add to your own build file in order to use Spring Web Services (or any XML/SOAP-based library for that matter).&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;Spring Web Services does not ship these dependencies so you&amp;#8217;ll have to add them to your own build file. But once you do, you won&amp;#8217;t have to worry about again (except for when newer versions of those APIs are released).&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;Still using Spring Web Services 2.x maintenance branch? We&amp;#8217;ve got you covered. Without breaking backward compatibility, the 2.4.3.RELEASE &lt;a href="https://github.com/spring-projects/spring-ws/blob/2.x/pom.xml#L588-L644"&gt;also supports Java 11&lt;/a&gt;. It just uses a slightly older version of the SOAP API (1.3.8 instead of 1.4.0). Nothing is forced upon you, so you can continue using the same versions of everything else.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;Whether or not Java 11 breaks any parts of your application outside of Spring Web Services, of course, is up to you.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;For more details, read the following release notes for each version:&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="release-notes-spring-web-services-version-3-0-4-release"&gt;&lt;a class="anchor" href="#release-notes-spring-web-services-version-3-0-4-release"&gt;&lt;/a&gt;Release Notes - Spring Web Services - Version 3.0.4.RELEASE&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="sect2"&gt;
-&lt;h3 id="bug"&gt;&lt;a class="anchor" href="#bug"&gt;&lt;/a&gt;Bug&lt;/h3&gt;
-&lt;div class="ulist"&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href="https://jira.spring.io/browse/SWS-1018"&gt;SWS-1018&lt;/a&gt; -         SaajSoapMessage created with default (empty) SoapEnvelope&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href="https://jira.spring.io/browse/SWS-1036"&gt;SWS-1036&lt;/a&gt; -         SimpleXsdSchema not initialized property produces NullPointerException&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect2"&gt;
-&lt;h3 id="improvement"&gt;&lt;a class="anchor" href="#improvement"&gt;&lt;/a&gt;Improvement&lt;/h3&gt;
-&lt;div class="ulist"&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href="https://jira.spring.io/browse/SWS-1030"&gt;SWS-1030&lt;/a&gt; -         Resolve version conflicts&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href="https://jira.spring.io/browse/SWS-1033"&gt;SWS-1033&lt;/a&gt; -         Ehcache - OWASP Dependency Check issues&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href="https://jira.spring.io/browse/SWS-1034"&gt;SWS-1034&lt;/a&gt; -         Switch to Java 11 for future JDK support&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href="https://jira.spring.io/browse/SWS-1037"&gt;SWS-1037&lt;/a&gt; -         Make SimpleXsdSchema give a more productive error message&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href="https://jira.spring.io/browse/SWS-1038"&gt;SWS-1038&lt;/a&gt; -         Polish documentation&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href="https://jira.spring.io/browse/SWS-1039"&gt;SWS-1039&lt;/a&gt; -         Upgrade to latest version of Spring&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="release-notes-spring-web-services-version-2-4-3"&gt;&lt;a class="anchor" href="#release-notes-spring-web-services-version-2-4-3"&gt;&lt;/a&gt;Release Notes - Spring Web Services - Version 2.4.3&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="sect2"&gt;
-&lt;h3 id="bug-2"&gt;&lt;a class="anchor" href="#bug-2"&gt;&lt;/a&gt;Bug&lt;/h3&gt;
-&lt;div class="ulist"&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href="https://jira.spring.io/browse/SWS-1018"&gt;SWS-1018&lt;/a&gt; -         SaajSoapMessage created with default (empty) SoapEnvelope&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href="https://jira.spring.io/browse/SWS-1036"&gt;SWS-1036&lt;/a&gt; -         SimpleXsdSchema not initialized property produces NullPointerException&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect2"&gt;
-&lt;h3 id="improvement-2"&gt;&lt;a class="anchor" href="#improvement-2"&gt;&lt;/a&gt;Improvement&lt;/h3&gt;
-&lt;div class="ulist"&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href="https://jira.spring.io/browse/SWS-1012"&gt;SWS-1012&lt;/a&gt; -         Upgrade to latest Spring Framework and Spring Security versions&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href="https://jira.spring.io/browse/SWS-1033"&gt;SWS-1033&lt;/a&gt; -         Ehcache - OWASP Dependency Check issues&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href="https://jira.spring.io/browse/SWS-1034"&gt;SWS-1034&lt;/a&gt; -         Switch to Java 11 for future JDK support&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;LInks: &lt;a href="http://projects.spring.io/spring-ws/"&gt;Project Page&lt;/a&gt; | &lt;a href="https://github.com/spring-projects/spring-ws"&gt;GitHub&lt;/a&gt; | &lt;a href="https://jira.spring.io/browse/SWS"&gt;Issues&lt;/a&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;The artifacts are staged on maven central and &lt;a href="http://repo.spring.io/" class="bare"&gt;http://repo.spring.io/&lt;/a&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="springone-platform"&gt;&lt;a class="anchor" href="#springone-platform"&gt;&lt;/a&gt;SpringOne Platform&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;The hottest Spring conference is right around the corner. In less than a week thousands of Spring developers from around the globe will gather in Washington, D.C. It&amp;#8217;s still not too late to &lt;a href="https://springoneplatform.io/register"&gt;register&lt;/a&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;</content>
-  </entry>
-  <entry>
-    <title>Announcing Spring Cloud Function - 2.0.0.M2</title>
-    <link rel="alternate" href="https://spring.io/blog/2018/09/19/announcing-spring-cloud-function-2-0-0-m2" />
-    <category term="engineering" label="Engineering" />
-    <author>
-      <name>Oleg Zhurakousky</name>
-    </author>
-    <id>tag:spring.io,2018-09-19:3401</id>
-    <updated>2018-09-19T13:40:00Z</updated>
-    <content type="html">&lt;p&gt;We are pleased to announce the second Milestone of the Spring Cloud Function - 2.0.0.M2.&lt;/p&gt;
-&lt;p&gt;Individual modules of Spring Cloud Function 2.0.0.M2 are available for use in the &lt;a href="http://repo.spring.io/libs-milestone-local/org/springframework/cloud/"&gt;Spring Milestone&lt;/a&gt; repository. &lt;/p&gt;
-&lt;p&gt;Aside form general enhancements and bug fixes, the primary themes for this release are&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href="https://spring.io/blog/2018/09/11/kotlin-support-in-spring-cloud-function"&gt;Kotlin support&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;new programming model for Azure Functions (blog to follow)&lt;/li&gt;
-  &lt;li&gt;automatic (optional) export of &lt;code&gt;Supplier&lt;/code&gt; on startup in web adapter&lt;/li&gt;
-&lt;/ul&gt;&lt;h3&gt;&lt;a href="#how-can-you-help" class="anchor" name="how-can-you-help"&gt;&lt;/a&gt;How can you help?&lt;/h3&gt;
-&lt;p&gt;If you&amp;rsquo;re interested in helping out, check out the &lt;a href="https://github.com/spring-cloud/spring-cloud-function/labels/ideal-for-contribution"&gt;&amp;ldquo;ideal for contribution&amp;rdquo; tag&lt;/a&gt; in the issue repository. If you have general questions, please ask on &lt;a href="http://stackoverflow.com"&gt;stackoverflow.com&lt;/a&gt; using the &lt;a href="http://stackoverflow.com/tags/spring-cloud-function"&gt;&lt;code&gt;spring-cloud-function&lt;/code&gt; tag&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://cloud.spring.io/spring-cloud-function/"&gt;Project Page&lt;/a&gt; | &lt;a href="https://github.com/spring-cloud/spring-cloud-function"&gt;GitHub&lt;/a&gt; | &lt;a href="https://github.com/spring-cloud/spring-cloud-function/issues"&gt;Issues&lt;/a&gt; | &lt;a href="http://cloud.spring.io/spring-cloud-static/spring-cloud-function/2.0.0.M2/"&gt;Documentation&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
 </feed>

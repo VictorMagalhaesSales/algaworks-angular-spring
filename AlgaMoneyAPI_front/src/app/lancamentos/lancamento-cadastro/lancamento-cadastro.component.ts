@@ -1,3 +1,4 @@
+import { Title } from '@angular/platform-browser';
 import { ToastyService } from 'ng2-toasty';
 import { LancamentoService } from './../lancamento.service';
 import { FormControl } from '@angular/forms';
@@ -30,10 +31,12 @@ export class LancamentoCadastroComponent implements OnInit {
     private lancamentoService: LancamentoService,
     private toasty: ToastyService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private title: Title
     ) { }
 
   ngOnInit() {
+    this.title.setTitle('Cadastro de lançamentos');
     const codigoLancamento = this.route.snapshot.params['codigo'];
 
     if (codigoLancamento) {
@@ -52,11 +55,12 @@ export class LancamentoCadastroComponent implements OnInit {
     this.lancamentoService.buscarPorCodigo(codigo)
       .then(lancamento => {
         this.lancamento = lancamento;
+        this.atualzarTituloEdição();
       })
       .catch(erro => this.handler.handleError(erro));
   }
 
-  listarCategorias(){
+  listarCategorias() {
     this.categoriaService.listarTodas()
       .then(categorias => {
         this.categorias = categorias.map(categoria => {
@@ -66,7 +70,7 @@ export class LancamentoCadastroComponent implements OnInit {
       .catch((erro) => this.handler.handleError(erro));
   }
 
-  listarPessoas(){
+  listarPessoas() {
     this.pessoaService.listarTodas()
       .then( pessoas => {
         this.pessoas = pessoas.map(pessoa => {
@@ -100,14 +104,24 @@ export class LancamentoCadastroComponent implements OnInit {
     this.lancamentoService.atualizar(this.lancamento)
       .then(lancamento => {
         this.lancamento = lancamento;
-
+        this.atualzarTituloEdição();
         this.toasty.success('Lançamento alterado com sucesso!');
       })
       .catch(erro => this.handler.handleError(erro));
   }
 
-  novo(form: FormControl){
+  novo(form: FormControl) {
+    form.reset();
+
+    setTimeout(function() {
+      this.lancamento = new Lancamento();
+    }.bind(this), 1);
+
     this.router.navigate(['lancamentos/novo']);
+  }
+
+  atualzarTituloEdição() {
+    this.title.setTitle(`Edição de lançamentos: ${this.lancamento.descricao}`);
   }
 
 }
