@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment.prod';
 import { URLSearchParams } from '@angular/http';
 import { Injectable } from '@angular/core';
 
@@ -18,9 +19,11 @@ export class LancamentoFiltro {
 @Injectable()
 export class LancamentoService {
 
-  lancamentosUrl = 'http://localhost:8080/lancamentos';
+  lancamentosUrl: string;
 
-  constructor(private http: AuthHttp) { }
+  constructor(private http: AuthHttp) {
+    this.lancamentosUrl = `${environment.api}/categorias`;
+  }
 
   pesquisar(filtro: LancamentoFiltro): Promise<any> {
     const params = new URLSearchParams();
