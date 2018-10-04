@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.example.algamoney.api.AlgamoneyApiApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 13.632 sec - in com.example.algamoney.api.AlgamoneyApiApplicationTests
