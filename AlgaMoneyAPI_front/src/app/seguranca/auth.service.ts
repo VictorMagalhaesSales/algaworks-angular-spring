@@ -1,9 +1,10 @@
-import { environment } from './../../environments/environment.prod';
 import { Http, Headers } from '@angular/http';
 import { Injectable } from '@angular/core';
 
 import { JwtHelper } from 'angular2-jwt';
 import 'rxjs/add/operator/toPromise';
+
+import { environment } from './../../environments/environment';
 
 @Injectable()
 export class AuthService {
@@ -15,8 +16,8 @@ export class AuthService {
     private http: Http,
     private jwtHelper: JwtHelper
   ) {
+    this.oauthTokenUrl = `${environment.apiUrl}/oauth/token`;
     this.carregarToken();
-    this.oauthTokenUrl = `${environment.api}/categorias`;
   }
 
   login(usuario: string, senha: string): Promise<void> {
