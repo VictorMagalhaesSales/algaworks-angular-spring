@@ -11,14 +11,14 @@
 	<field name="tipo" class="com.example.algamoney.api.model.TipoLancamento"/>
 	<field name="pessoa" class="com.example.algamoney.api.model.Pessoa"/>
 	<title>
-		<band height="60" splitType="Stretch">
-			<staticText>
-				<reportElement x="82" y="15" width="390" height="30" uuid="6be613e2-5235-4e7c-aaec-a3cbfe3328a9"/>
+		<band height="61" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="15" width="560" height="30" uuid="c863ecb7-4e84-4c3a-be71-f344ffc7d42b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="22"/>
+					<font size="16"/>
 				</textElement>
-				<text><![CDATA[Lançamentos por pessoa]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA["Lançamentos por pessoa de " + DATEFORMAT($P{DT_INICIO}, "dd/MM/yyyy") + " até " + DATEFORMAT($P{DT_FIM},"dd/MM/yyyy")]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<columnHeader>
@@ -66,9 +66,37 @@
 			<line>
 				<reportElement x="0" y="24" width="555" height="1" uuid="50d4b333-1e55-411f-8ea1-b9e4e5eeb527"/>
 			</line>
+			<textField>
+				<reportElement x="5" y="1" width="74" height="23" uuid="fc03656a-01c7-4aae-b86a-ba7c60b29178"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipo}.getDescricao()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="82" y="-3" width="398" height="27" uuid="706c83f8-dce8-4ea2-bee7-bb9baf075184"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none"/>
+				<textFieldExpression><![CDATA[$F{pessoa}.getNome()]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤#,##0.00;¤-#,##0.00">
+				<reportElement x="490" y="1" width="55" height="24" uuid="c2c43c9a-110f-4eb3-944c-68e365d82872"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="54" splitType="Stretch"/>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement x="1" y="0" width="140" height="25" uuid="140df91c-5bf6-488c-a24a-b23f07001db0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["Data " + DATEFORMAT(TODAY() , "dd/MM/yyyy")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="454" y="0" width="100" height="25" uuid="fc313af2-093a-46e6-9185-ba2e0024a63e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageFooter>
 </jasperReport>
