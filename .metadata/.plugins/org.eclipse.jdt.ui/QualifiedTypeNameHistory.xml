@@ -3,7 +3,6 @@
 <fullyQualifiedTypeName name="com.example.algamoney.api.model.Categoria"/>
 <fullyQualifiedTypeName name="com.example.algamoney.api.model.TipoLancamento"/>
 <fullyQualifiedTypeName name="java.math.BigDecimal"/>
-<fullyQualifiedTypeName name="java.util.List"/>
 <fullyQualifiedTypeName name="org.apache.hadoop.hdfs.server.datanode.dataNodeHome_jsp"/>
 <fullyQualifiedTypeName name="javax.persistence.TypedQuery"/>
 <fullyQualifiedTypeName name="javax.persistence.criteria.CriteriaQuery"/>
@@ -11,4 +10,10 @@
 <fullyQualifiedTypeName name="java.time.LocalDate"/>
 <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.GetMapping"/>
 <fullyQualifiedTypeName name="com.example.algamoney.api.dto.LancamentoEstatisticaDia"/>
+<fullyQualifiedTypeName name="com.example.algamoney.api.dto.LancamentoEstatisticaPessoa"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="java.util.Map"/>
+<fullyQualifiedTypeName name="java.sql.Date"/>
+<fullyQualifiedTypeName name="java.io.InputStream"/>
+<fullyQualifiedTypeName name="net.sf.jasperreports.engine.JasperExportManager"/>
 </qualifiedTypeNameHistroy>
